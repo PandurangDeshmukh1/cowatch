@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WatchTogether — Watch movies with friends</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-logo">
+      <span class="logo-pulse"></span>
+      WatchTogether
+    </div>
+    <div class="nav-actions">
+      <a href="#how" class="nav-link">How it works</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg">
+        <div class="film-strip">
+          <div class="frame"></div><div class="frame"></div><div class="frame"></div>
+          <div class="frame"></div><div class="frame"></div><div class="frame"></div>
+          <div class="frame"></div><div class="frame"></div>
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-badge">Real-time sync &bull; Video call &bull; Live chat</div>
+        <h1 class="hero-title">Watch movies<br><em>together</em></h1>
+        <p class="hero-sub">Create a room, share the link, enjoy perfectly synced<br>movies with friends — anywhere in the world.</p>
+
+        <div class="cards-wrap">
+          <div class="action-card">
+            <div class="card-label">Create a room</div>
+            <div class="input-row">
+              <input type="text" id="username-create" placeholder="Your name" maxlength="20" />
+              <button class="btn-primary" onclick="createRoom()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                Create
+              </button>
+            </div>
+          </div>
+
+          <div class="divider-or"><span>or</span></div>
+
+          <div class="action-card">
+            <div class="card-label">Join a room</div>
+            <div class="input-row">
+              <input type="text" id="username-join" placeholder="Your name" maxlength="20" />
+              <input type="text" id="room-code" placeholder="Room code" maxlength="8" style="width:110px;flex:none;" />
+              <button class="btn-secondary" onclick="joinRoom()">Join →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="how">
+      <div class="features-grid">
+        <div class="feat">
+          <div class="feat-icon feat-icon--blue">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="5" width="18" height="13" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M9 9l5 2.5L9 14V9z" fill="currentColor"/></svg>
+          </div>
+          <h3>Synced playback</h3>
+          <p>Play, pause and seek are mirrored to your friend in real time. No spoilers, no drifting ahead.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon feat-icon--green">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="8" cy="11" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="14" cy="11" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+          </div>
+          <h3>Live video call</h3>
+          <p>See each other's reactions with WebRTC-powered peer-to-peer video — no plugins needed.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon feat-icon--purple">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 6h14M4 11h10M4 16h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Live chat</h3>
+          <p>Send messages and react while the movie plays. Your friend sees them instantly.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon feat-icon--amber">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3L3 19h16L11 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 9v5M11 16v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3>No account needed</h3>
+          <p>Just enter a name, create a room, share the link. Start watching in under 10 seconds.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built with Socket.IO &amp; WebRTC &bull; WatchTogether</p>
+  </footer>
+
+  <script>
+    function generateRoomId() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    function createRoom() {
+      const name = document.getElementById('username-create').value.trim() || 'Guest';
+      const roomId = generateRoomId();
+      window.location.href = `/room/${roomId}?name=${encodeURIComponent(name)}`;
+    }
+
+    function joinRoom() {
+      const name = document.getElementById('username-join').value.trim() || 'Guest';
+      const code = document.getElementById('room-code').value.trim().toUpperCase();
+      if (!code) { document.getElementById('room-code').focus(); return; }
+      window.location.href = `/room/${code}?name=${encodeURIComponent(name)}`;
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (document.activeElement.id === 'room-code' || document.activeElement.id === 'username-join') joinRoom();
+        if (document.activeElement.id === 'username-create') createRoom();
+      }
+    });
+  </script>
+</body>
+</html>

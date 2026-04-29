@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WatchTogether — Room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+
+<div class="room-layout">
+
+  <!-- Header -->
+  <header class="room-header">
+    <a href="/" style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;">
+      <span class="logo-pulse"></span>WatchTogether
+    </a>
+    <span class="room-id-badge" id="roomBadge" title="Click to copy link" onclick="copyLink()">Room: ...</span>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="user-count"><div class="user-dot"></div><span id="userCountText">1 watching</span></div>
+      <button class="ctrl-btn" id="camBtn" title="Toggle camera" onclick="toggleCamera()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 5h8a1 1 0 011 1v4a1 1 0 01-1 1H2a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M11 7l4-2v6l-4-2V7z" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
+      <button class="ctrl-btn" id="micBtn" title="Toggle mic" onclick="toggleMic()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="2" width="6" height="8" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M3 8a5 5 0 0010 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 13v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Video area -->
+  <div class="video-area">
+    <div class="video-container" id="videoContainer">
+      <div class="video-placeholder" id="placeholder">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><rect x="4" y="12" width="36" height="32" rx="5" stroke="white" stroke-width="2"/><path d="M40 22l12-6v24l-12-6V22z" stroke="white" stroke-width="2"/></svg>
+        <p>Paste a video URL below to start watching</p>
+      </div>
+      <video id="mainVideo" style="display:none;" controls></video>
+    </div>
+
+    <div class="url-bar">
+      <input type="text" id="videoUrl" placeholder="Paste a direct video URL (.mp4, .webm, .ogg)..." />
+      <button onclick="loadVideo()">Load video</button>
+    </div>
+
+    <div class="controls-bar">
+      <button class="ctrl-btn" id="playBtn" onclick="togglePlay()" title="Play / Pause">
+        <svg id="playIcon" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3 2l9 5-9 5V2z"/></svg>
+      </button>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar" onclick="seekVideo(event)">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+      </div>
+
+      <button class="ctrl-btn" title="Sync with partner" onclick="forceSyncPartner()" style="font-size:11px;width:auto;padding:0 10px;border-radius:8px;">⟳ Sync</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="cameras">
+      <div class="cam-box">
+        <video id="localVideo" autoplay muted playsinline style="display:none;"></video>
+        <div class="cam-off-icon" id="localCamOff">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          You
+        </div>
+        <div class="cam-label">You</div>
+      </div>
+      <div class="cam-box">
+        <video id="remoteVideo" autoplay playsinline style="display:none;"></video>
+        <div class="cam-off-icon" id="remoteCamOff">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Friend
+        </div>
+        <div class="cam-label">Friend</div>
+      </div>
+    </div>
+
+    <div class="chat-section">
+      <div class="chat-header">Live chat</div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-wrap">
+        <input type="text" id="chatInput" placeholder="Say something..." maxlength="200" onkeydown="chatKeydown(event)" />
+        <button onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/room.js"></script>
+</body>
+</html>
