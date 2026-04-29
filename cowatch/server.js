@@ -23,16 +23,12 @@ io.on('connection', (socket) => {
     socket.join(roomId);
     socket.roomId = roomId;
     socket.username = username || 'Guest';
-
     if (!rooms[roomId]) rooms[roomId] = { users: [], videoState: { time: 0, playing: false, url: '' } };
-
     rooms[roomId].users.push({ id: socket.id, username: socket.username });
-
     socket.emit('room-state', rooms[roomId].videoState);
     socket.emit('room-users', rooms[roomId].users);
     socket.to(roomId).emit('user-joined', { id: socket.id, username: socket.username });
     socket.to(roomId).emit('room-users', rooms[roomId].users);
-
     console.log(`${socket.username} joined room ${roomId}`);
   });
 
@@ -52,7 +48,6 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('chat-message', { message, username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
   });
 
-  // WebRTC signaling
   socket.on('rtc-offer', ({ to, offer }) => {
     io.to(to).emit('rtc-offer', { from: socket.id, offer });
   });
@@ -78,4 +73,4 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`WatchTogether running on http://localhost:${PORT}`));
+server.listen(PORT, '0.0.0.0', () => console.log(`WatchTogether running on http://localhost:${PORT}`));
