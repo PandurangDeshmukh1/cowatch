@@ -279,3 +279,17 @@ document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
 });
+
+// ── Local file loader ─────────────────────────────────────────────────────
+function loadLocalFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  video.src = url;
+  video.style.display = 'block';
+  placeholder.style.display = 'none';
+  document.getElementById('localFileNote').style.display = 'block';
+  document.getElementById('videoUrl').value = '';
+  showToast('📁 ' + file.name + ' loaded!');
+  addSystemMsg('Video loaded from PC: ' + file.name + ' — ask your friend to load the same file!');
+}
